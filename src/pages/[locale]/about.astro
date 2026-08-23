@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { t } from '../../i18n/utils';
+import { locales, type Locale } from '../../i18n/ui';
+import { siteConfig } from '../../site.config';
+
+export function getStaticPaths() {
+  return locales.map((locale) => ({ params: { locale } }));
+}
+
+const locale = Astro.params.locale as Locale;
+const _ = t(locale);
+
+const body = {
+  zh: {
+    h1: '關於 Tensonic',
+    p: [
+      '冠律有限公司成立於 1996 年，以 TENSONIC 為品牌，在台中設計與製造廣播擴音設備。起步於家用音響，之後將數位控制與數位音訊架構導入產品線，目前產品涵蓋恆壓式廣播擴大機、多區廣播系統、行動擴音、數位卡拉OK 擴大機，以及迷你 Hi-Fi 播放器。',
+      '這個站台與公司官網分工明確：官網是完整型錄與經銷資訊，這裡則專門處理三件事——新機發表、規格與設計取捨的說明，以及安裝現場的實作筆記。所有內容以 Markdown 寫在 GitHub 上，改版歷程可追溯，工程與業務端都能直接提 Pull Request。',
+    ],
+    contactH: '聯絡方式',
+  },
+  en: {
+    h1: 'About Tensonic',
+    p: [
+      'Quann Liuh Co., Ltd. was founded in 1996 and manufactures public-address equipment in Taichung, Taiwan under the TENSONIC trademark. The company started in home stereo and later moved digital control and digital audio architecture into its product lines. Current products span constant-voltage PA amplifiers, multi-zone paging systems, portable sound, digital karaoke amplifiers and mini Hi-Fi players.',
+      'This site is deliberately narrower than the corporate catalogue at tensonic.com.tw. It carries three things: product launches, the reasoning behind specifications and design trade-offs, and field notes from installations. Every page is Markdown in a public GitHub repository, so revisions are traceable and both engineering and sales can contribute by pull request.',
+    ],
+    contactH: 'Contact',
+  },
+}[locale];
+---
+<BaseLayout locale={locale} title={_('nav.about')} path="about">
+  <div class="wrap prose">
+    <h1>{body.h1}</h1>
+    {body.p.map((para) => <p>{para}</p>)}
+    <h2>{body.contactH}</h2>
+    <div class="table-scroll">
+      <table>
+        <tbody>
+          <tr><th scope="row">{locale === 'zh' ? '公司' : 'Company'}</th><td>{siteConfig.company[locale]} ({siteConfig.brand})</td></tr>
+          <tr><th scope="row">{locale === 'zh' ? '地址' : 'Address'}</th><td>{siteConfig.address[locale]}</td></tr>
+          <tr><th scope="row">TEL</th><td>{siteConfig.tel}</td></tr>
+          <tr><th scope="row">FAX</th><td>{siteConfig.fax}</td></tr>
+          <tr><th scope="row">E-mail</th><td><a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a></td></tr>
+          <tr><th scope="row">{locale === 'zh' ? '官方網站' : 'Corporate site'}</th><td><a href={siteConfig.corporateSite}>tensonic.com.tw</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</BaseLayout>

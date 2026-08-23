@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { t, localeOf, slugOf, formatDate } from '../../../i18n/utils';
+import { locales, type Locale } from '../../../i18n/ui';
+
+export function getStaticPaths() {
+  return locales.map((locale) => ({ params: { locale } }));
+}
+
+const locale = Astro.params.locale as Locale;
+const _ = t(locale);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const entries = (await getCollection('launches', (e) => localeOf(e.id) === locale && !e.data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+<BaseLayout locale={locale} title={_('nav.launches')} path="launches">
+  <div class="wrap">
+    <h1>{_('nav.launches')}</h1>
+    {entries.length === 0 ? <p class="muted">{_('common.empty')}</p> : (
+      <ul class="list">
+        {entries.map((e) => (
+          <li>
+            <div class="meta muted">{formatDate(e.data.date, locale)}{e.data.model ? ` · ${e.data.model}` : ''}</div>
+            <h3><a href={`${base}/${locale}/launches/${slugOf(e.id)}/`}>{e.data.title}</a></h3>
+            <p class="muted">{e.data.summary}</p>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+</BaseLayout>

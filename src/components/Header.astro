@@ -1,0 +1,25 @@
+---
+import { t, otherLocale } from '../i18n/utils';
+import { siteConfig } from '../site.config';
+import type { Locale } from '../i18n/ui';
+
+interface Props { locale: Locale; path?: string }
+const { locale, path = '' } = Astro.props;
+const _ = t(locale);
+const other = otherLocale(locale);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (p: string) => `${base}/${locale}${p}`;
+---
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href={link('/')}>TEN<span>SONIC</span></a>
+    <nav class="site-nav">
+      <a href={link('/launches/')} aria-current={path === 'launches' ? 'page' : undefined}>{_('nav.launches')}</a>
+      <a href={link('/products/')} aria-current={path === 'products' ? 'page' : undefined}>{_('nav.products')}</a>
+      <a href={link('/posts/')} aria-current={path === 'posts' ? 'page' : undefined}>{_('nav.posts')}</a>
+      <a href={link('/about/')} aria-current={path === 'about' ? 'page' : undefined}>{_('nav.about')}</a>
+      <a href={siteConfig.repo} rel="noopener">{_('nav.github')}</a>
+      <a class="lang" href={`${base}/${other}/`}>{_('lang.switch')}</a>
+    </nav>
+  </div>
+</header>

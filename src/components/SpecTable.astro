@@ -1,0 +1,15 @@
+---
+interface Props { rows: { label: string; value: string }[] }
+const { rows } = Astro.props;
+---
+{rows.length > 0 && (
+  <div class="table-scroll">
+    <table>
+      <tbody>
+        {rows.map((r) => (
+          <tr><th scope="row">{r.label}</th><td>{r.value}</td></tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}

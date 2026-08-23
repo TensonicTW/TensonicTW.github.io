@@ -1,0 +1,39 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { t, localeOf, slugOf, formatDate } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/ui';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('launches', (e) => !e.data.draft);
+  return entries.map((entry) => ({
+    params: { locale: localeOf(entry.id), slug: slugOf(entry.id) },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const locale = Astro.params.locale as Locale;
+const _ = t(locale);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const { Content } = await render(entry);
+---
+<BaseLayout locale={locale} title={entry.data.title} description={entry.data.summary} path="launches">
+  <div class="wrap prose">
+    <div class="meta muted">{formatDate(entry.data.date, locale)}{entry.data.model ? ` · ${entry.data.model}` : ''}</div>
+    <h1>{entry.data.title}</h1>
+    <p class="lead">{entry.data.summary}</p>
+    {entry.data.highlights.length > 0 && (
+      <ul>{entry.data.highlights.map((h) => <li>{h}</li>)}</ul>
+    )}
+    <hr />
+    <Content />
+    {entry.data.product && (
+      <p><strong>{_('common.related')}：</strong>
+        <a href={`${base}/${locale}/products/${entry.data.product}/`}>{entry.data.product}</a>
+      </p>
+    )}
+    <hr />
+    <p><a href={`${base}/${locale}/launches/`}>← {_('common.backto')} {_('nav.launches')}</a></p>
+  </div>
+</BaseLayout>

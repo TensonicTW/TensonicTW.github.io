@@ -1,0 +1,36 @@
+name: 新品發表提案 / Launch proposal
+description: 提出一則新機發表，經審核後撰寫發表文
+labels: [launch]
+body:
+  - type: input
+    id: model
+    attributes:
+      label: 型號 / Model
+    validations:
+      required: true
+  - type: input
+    id: date
+    attributes:
+      label: 預計發表日 / Target date (YYYY-MM-DD)
+    validations:
+      required: true
+  - type: textarea
+    id: highlights
+    attributes:
+      label: 重點 / Highlights
+      description: 三到五項可驗證的重點
+    validations:
+      required: true
+  - type: textarea
+    id: assets
+    attributes:
+      label: 素材 / Assets
+      description: 產品照、規格表、型錄 PDF 的來源或連結
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 發佈前檢查
+      options:
+        - label: 規格已由產品部確認
+        - label: 中英文皆已備妥
+        - label: 產品頁已存在或同時建立

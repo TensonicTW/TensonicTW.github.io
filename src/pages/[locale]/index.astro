@@ -1,0 +1,92 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Card from '../../components/Card.astro';
+import { t, localeOf, slugOf, formatDate } from '../../i18n/utils';
+import { locales, type Locale } from '../../i18n/ui';
+import { siteConfig } from '../../site.config';
+
+export function getStaticPaths() {
+  return locales.map((locale) => ({ params: { locale } }));
+}
+
+const locale = Astro.params.locale as Locale;
+const _ = t(locale);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (p: string) => `${base}/${locale}${p}`;
+
+const launches = (await getCollection('launches', (e) => localeOf(e.id) === locale && !e.data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const products = (await getCollection('products', (e) => localeOf(e.id) === locale))
+  .sort((a, b) => a.data.order - b.data.order);
+const posts = (await getCollection('posts', (e) => localeOf(e.id) === locale && !e.data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const featured = launches[0];
+---
+<BaseLayout locale={locale} path="home">
+  <section class="hero">
+    <div class="wrap">
+      <h1>{_('home.hero.title')}</h1>
+      <p class="lead">{_('home.hero.body')}</p>
+      <div class="btn-row">
+        <a class="btn primary" href={featured ? link(`/launches/${slugOf(featured.id)}/`) : link('/launches/')}>{_('home.hero.cta')}</a>
+        <a class="btn" href={link('/products/')}>{_('home.hero.cta2')}</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section>
+      <div class="section-head"><h2>{_('home.latest')}</h2><a href={link('/launches/')}>{_('common.more')} →</a></div>
+      {launches.length === 0 ? <p class="muted">{_('common.empty')}</p> : (
+        <div class="grid">
+          {launches.slice(0, 3).map((e) => (
+            <Card
+              title={e.data.title}
+              href={link(`/launches/${slugOf(e.id)}/`)}
+              meta={`${formatDate(e.data.date, locale)}${e.data.model ? ' · ' + e.data.model : ''}`}
+              summary={e.data.summary}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+
+    <section>
+      <div class="section-head"><h2>{_('home.products')}</h2><a href={link('/products/')}>{_('common.more')} →</a></div>
+      <div class="grid">
+        {products.slice(0, 6).map((e) => (
+          <Card
+            title={e.data.title}
+            href={link(`/products/${slugOf(e.id)}/`)}
+            meta={e.data.model}
+            tag={_(`status.${e.data.status}` as any)}
+            summary={e.data.summary}
+          />
+        ))}
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>{_('home.posts')}</h2><a href={link('/posts/')}>{_('common.more')} →</a></div>
+      {posts.length === 0 ? <p class="muted">{_('common.empty')}</p> : (
+        <ul class="list">
+          {posts.slice(0, 5).map((e) => (
+            <li>
+              <h3><a href={link(`/posts/${slugOf(e.id)}/`)}>{e.data.title}</a></h3>
+              <div class="meta muted">{formatDate(e.data.date, locale)} · {e.data.author}</div>
+              <p class="muted">{e.data.summary}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+
+    <section>
+      <h2>{_('contact.title')}</h2>
+      <p class="muted">
+        {siteConfig.company[locale]} · TEL {siteConfig.tel} · <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+      </p>
+    </section>
+  </div>
+</BaseLayout>

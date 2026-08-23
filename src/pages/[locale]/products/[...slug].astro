@@ -1,0 +1,54 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SpecTable from '../../../components/SpecTable.astro';
+import { t, localeOf, slugOf } from '../../../i18n/utils';
+import type { Locale } from '../../../i18n/ui';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('products');
+  return entries.map((entry) => ({
+    params: { locale: localeOf(entry.id), slug: slugOf(entry.id) },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const locale = Astro.params.locale as Locale;
+const _ = t(locale);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const { Content } = await render(entry);
+---
+<BaseLayout locale={locale} title={`${entry.data.model} ${entry.data.title}`} description={entry.data.summary} path="products">
+  <div class="wrap prose">
+    <div class="meta muted">{entry.data.category} · <span class="tag">{_(`status.${entry.data.status}` as any)}</span></div>
+    <h1>{entry.data.model}</h1>
+    <p class="lead">{entry.data.summary}</p>
+
+    {entry.data.features.length > 0 && (
+      <>
+        <h2>{_('common.features')}</h2>
+        <ul>{entry.data.features.map((f) => <li>{f}</li>)}</ul>
+      </>
+    )}
+
+    <Content />
+
+    {entry.data.specs.length > 0 && (
+      <>
+        <h2>{_('common.specs')}</h2>
+        <SpecTable rows={entry.data.specs} />
+      </>
+    )}
+
+    {entry.data.downloads.length > 0 && (
+      <>
+        <h2>{_('common.downloads')}</h2>
+        <ul>{entry.data.downloads.map((d) => <li><a href={d.href}>{d.label}</a></li>)}</ul>
+      </>
+    )}
+
+    <hr />
+    <p><a href={`${base}/${locale}/products/`}>← {_('common.backto')} {_('nav.products')}</a></p>
+  </div>
+</BaseLayout>

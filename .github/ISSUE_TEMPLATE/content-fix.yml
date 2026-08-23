@@ -1,0 +1,20 @@
+name: 內容修正 / Content correction
+description: 回報規格錯誤、連結失效或翻譯問題
+labels: [content]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: 頁面網址 / Page URL
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 問題描述 / Description
+    validations:
+      required: true
+  - type: textarea
+    id: correct
+    attributes:
+      label: 正確內容 / Correct information

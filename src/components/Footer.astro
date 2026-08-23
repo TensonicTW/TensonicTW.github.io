@@ -1,0 +1,30 @@
+---
+import { t } from '../i18n/utils';
+import { siteConfig } from '../site.config';
+import type { Locale } from '../i18n/ui';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const _ = t(locale);
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap cols">
+    <div>
+      <strong>{siteConfig.company[locale]}</strong><br />
+      {siteConfig.address[locale]}
+    </div>
+    <div>
+      <strong>{_('contact.title')}</strong><br />
+      TEL {siteConfig.tel}<br />
+      FAX {siteConfig.fax}<br />
+      <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+    </div>
+    <div>
+      <a href={siteConfig.corporateSite} rel="noopener">tensonic.com.tw</a><br />
+      <a href={siteConfig.repo} rel="noopener">GitHub</a><br />
+      <span>{_('footer.source')}</span>
+    </div>
+  </div>
+  <div class="wrap" style="margin-top:1.5rem">© {siteConfig.founded}–{year} {siteConfig.company[locale]}. {_('footer.rights')}.</div>
+</footer>
