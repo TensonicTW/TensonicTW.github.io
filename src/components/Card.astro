@@ -1,10 +1,32 @@
 ---
-interface Props { title: string; href: string; meta?: string; tag?: string; summary?: string }
-const { title, href, meta, tag, summary } = Astro.props;
+interface Props { title: string; href: string; meta?: string; tag?: string; summary?: string; image?: string }
+const { title, href, meta, tag, summary, image } = Astro.props;
 ---
 <article class="card">
+  {image && (
+    <a href={href} class="card-thumb">
+      <img src={image} alt={title} loading="lazy" width="600" height="600" />
+    </a>
+  )}
   {meta && <div class="meta">{meta}</div>}
   <h3><a href={href}>{title}</a></h3>
   {summary && <p>{summary}</p>}
   {tag && <div><span class="tag">{tag}</span></div>}
 </article>
+
+<style>
+  .card-thumb {
+    display: block;
+    margin-bottom: 0.75rem;
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    background: var(--color-surface-2, #f2f2f2);
+  }
+  .card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+</style>

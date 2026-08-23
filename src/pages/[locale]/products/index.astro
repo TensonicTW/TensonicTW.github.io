@@ -31,6 +31,7 @@ const categories = [...new Set(entries.map((e) => e.data.category))];
               meta={e.data.model}
               tag={_(`status.${e.data.status}` as any)}
               summary={e.data.summary}
+              image={e.data.image}
             />
           ))}
         </div>

@@ -116,3 +116,32 @@ th { color: var(--fg-muted); font-weight: 600; white-space: nowrap; width: 34%; 
 .site-footer { border-top: 1px solid var(--line); padding: 2rem 0 3rem; color: var(--fg-muted); font-size: 0.88rem; }
 .site-footer .cols { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 .site-footer strong { color: var(--fg); font-weight: 600; }
+
+.product-hero {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin: 1.25rem 0 1.75rem;
+}
+
+.prose .gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+  list-style: none;
+  padding: 0;
+}
+.prose .gallery li {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-soft);
+  aspect-ratio: 1 / 1;
+}
+.prose .gallery img { width: 100%; height: 100%; object-fit: contain; display: block; }

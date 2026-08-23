@@ -25,6 +25,10 @@ const { Content } = await render(entry);
     <h1>{entry.data.model}</h1>
     <p class="lead">{entry.data.summary}</p>
 
+    {entry.data.image && (
+      <img class="product-hero" src={entry.data.image} alt={`${entry.data.model} ${entry.data.title}`} loading="eager" />
+    )}
+
     {entry.data.features.length > 0 && (
       <>
         <h2>{_('common.features')}</h2>
